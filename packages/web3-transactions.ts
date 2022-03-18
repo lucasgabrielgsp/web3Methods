@@ -42,25 +42,28 @@ export const sendTransactions = async (
   value: number,
   gasFee?: string
 ) => {
+  const gasPrice = (await web3Provider.eth.getGasPrice()).toString();
+
   let editGasFee: any;
 
   switch (gasFee) {
     case "low":
-      editGasFee =
-        (await web3Provider.eth.estimateGas({
-          to: toAddress,
-        })) * 0.8;
+      editGasFee = web3Provider.utils
+        .toBN(gasPrice)
+        .mul(web3Provider.utils.toBN(8))
+        .div(web3Provider.utils.toBN(10))
+        .toString();
+
       break;
     case "high":
-      editGasFee =
-        (await web3Provider.eth.estimateGas({
-          to: toAddress,
-        })) * 1.4;
+      editGasFee = web3Provider.utils
+        .toBN(gasPrice)
+        .mul(web3Provider.utils.toBN(11))
+        .div(web3Provider.utils.toBN(10))
+        .toString();
       break;
     default:
-      editGasFee = await web3Provider.eth.estimateGas({
-        to: toAddress,
-      });
+      editGasFee = gasPrice;
       break;
   }
 
@@ -72,29 +75,31 @@ export const sendTransactions = async (
       gas: await web3Provider.eth.estimateGas({
         to: toAddress,
       }),
-      gasPrice: gasFee
-        ? await web3Provider.eth.getGasPrice((_, result: any) =>
-            console.log("GAS PRICE", result * 1.3)
-          )
-        : "",
+      gasPrice: editGasFee,
       nonce: await web3Provider.eth.getTransactionCount(fromAddress, "latest"),
     },
     fromPrivateKey
   );
 
-  console.log("EDIT GAS FEE", editGasFee);
+  // console.log("EDIT GAS FEE", editGasFee);
 
-  console.log(
-    "NORMAL GAS FEE",
-    await web3Provider.eth.estimateGas({
-      to: toAddress,
-    })
-  );
+  // console.log(
+  //   "NORMAL GAS FEE",
+  //   await web3Provider.eth.estimateGas({
+  //     to: toAddress,
+  //   })
+  // );
 
   try {
     return web3Provider.eth
       .sendSignedTransaction(`${signedTransaction.rawTransaction}`)
-      .then((result: any) => result);
+      .on("transactionHash", (th) => console.log("transactionHash", th))
+      .on("confirmation", (response) => console.log("confirmation", response))
+      .on("error", (error) => console.log("error", error))
+      .on("receipt", (receipt) => console.log("receipt", receipt))
+      .on("sent", (sent) => console.log("sent", sent))
+      .on("sending", (sending) => console.log("sending", sending))
+      .then((result: any) => console.log("THEN", result));
   } catch (error) {
     console.log(`${error}`);
   }
@@ -104,6 +109,5 @@ sendTransactions(
   "0x0beaDdE9e116ceF07aFedc45a8566d1aDd3168F3",
   "0x6e578c2227bc4629794e566610209c9cb7a35341f13de4ba886a59a4e11b7d1e",
   "0xCe1812Ccc5273a3F8B1b2d96217877842a851A31",
-  0.01,
-  "high"
+  0.02
 ).then((result) => console.log(result));
