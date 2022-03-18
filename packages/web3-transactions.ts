@@ -1,5 +1,5 @@
-import { web3Provider } from '../provider/web3Provider';
-import { TransactionReceipt } from 'web3-core';
+import { web3Provider } from "../provider/web3Provider";
+import { TransactionReceipt } from "web3-core";
 
 /**
  * This function should send a value to address provided.
@@ -42,34 +42,54 @@ export const sendTransactions = async (
   value: number,
   gasFee?: string
 ) => {
-  const lastBlockValue: any = await web3Provider.eth.getBlock('latest');
-  const editGasFee =
-    gasFee === 'low' ? lastBlockValue * 0.8 : lastBlockValue * 1.2;
+  let editGasFee: any;
+
+  switch (gasFee) {
+    case "low":
+      editGasFee =
+        (await web3Provider.eth.estimateGas({
+          to: toAddress,
+        })) * 0.8;
+      break;
+    case "high":
+      editGasFee =
+        (await web3Provider.eth.estimateGas({
+          to: toAddress,
+        })) * 1.4;
+      break;
+    default:
+      editGasFee = await web3Provider.eth.estimateGas({
+        to: toAddress,
+      });
+      break;
+  }
 
   const signedTransaction = await web3Provider.eth.accounts.signTransaction(
     {
       from: fromAddress,
       to: toAddress,
-      value: web3Provider.utils.toWei(value.toString(), 'ether'),
-      gas: gasFee
-        ? editGasFee
-        : await web3Provider.eth.estimateGas({
-            to: toAddress,
-          }),
-      nonce: await web3Provider.eth.getTransactionCount(fromAddress, "latest")
+      value: web3Provider.utils.toWei(value.toString(), "ether"),
+      gas: await web3Provider.eth.estimateGas({
+        to: toAddress,
+      }),
+      gasPrice: gasFee
+        ? await web3Provider.eth.getGasPrice((_, result: any) =>
+            console.log("GAS PRICE", result * 1.3)
+          )
+        : "",
+      nonce: await web3Provider.eth.getTransactionCount(fromAddress, "latest"),
     },
     fromPrivateKey
   );
 
-  console.log('EDIT GAS FEE', editGasFee);
+  console.log("EDIT GAS FEE", editGasFee);
 
   console.log(
-    'NORMAL GAS FEE',
+    "NORMAL GAS FEE",
     await web3Provider.eth.estimateGas({
       to: toAddress,
     })
   );
-  console.log('nonce', await web3Provider.eth.getTransactionCount(fromAddress, "latest"))
 
   try {
     return web3Provider.eth
@@ -81,8 +101,9 @@ export const sendTransactions = async (
 };
 
 sendTransactions(
-  '0x0beaDdE9e116ceF07aFedc45a8566d1aDd3168F3',
-  '0x6e578c2227bc4629794e566610209c9cb7a35341f13de4ba886a59a4e11b7d1e',
-  '0xCe1812Ccc5273a3F8B1b2d96217877842a851A31',
-  0.01
+  "0x0beaDdE9e116ceF07aFedc45a8566d1aDd3168F3",
+  "0x6e578c2227bc4629794e566610209c9cb7a35341f13de4ba886a59a4e11b7d1e",
+  "0xCe1812Ccc5273a3F8B1b2d96217877842a851A31",
+  0.01,
+  "high"
 ).then((result) => console.log(result));

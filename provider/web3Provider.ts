@@ -1,6 +1,6 @@
 //@ts-nocheck
-import Web3 from 'web3';
-import { networks } from '../networks/networks';
+import Web3 from "web3";
+import { networks } from "../networks/networks";
 
 /**
  * This function should change the current network.
@@ -34,7 +34,7 @@ export const changeNetwork = async (chainId: number) => {
   }
 
   if (provider === undefined)
-    throw new Error('Network not found, try again with a correct one!');
+    throw new Error("Network not found, try again with a correct one!");
 
   const { HttpProvider } = Web3.providers;
 
@@ -42,23 +42,24 @@ export const changeNetwork = async (chainId: number) => {
 };
 
 export const web3Provider = new Web3(
-  new Web3.providers.HttpProvider('https://rpc.syscoin.org/')
+  new Web3.providers.HttpProvider("https://rpc.syscoin.org/")
 );
 
 const RpcVerifier = () => {
-  return web3Provider.eth.net.isListening((err, res) => {
-    if (err) {
-      return console.error({
-        message: 'Check the current RPC. Maybe is not a valid RPC.',
-        valid: res === undefined ? false : null,
+  return web3Provider.eth.net
+    .isListening((err, res) => {
+      if (err) {
+        return console.error({
+          message: "Check the current RPC. Maybe is not a valid RPC.",
+          valid: res === undefined ? false : null,
+        });
+      }
+      return console.log({
+        message: "The current RPC is working correctly.",
+        valid: res,
       });
-    }
-    return console.log({
-      message: 'The current RPC is working correctly.',
-      valid: res,
-    });
-  }).then((result) => result);
+    })
+    .then((result) => result);
 };
 
-RpcVerifier();
-
+changeNetwork(4);
