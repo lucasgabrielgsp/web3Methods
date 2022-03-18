@@ -1,5 +1,5 @@
 {
-  "name": "@pollum-io/sysweb3",
+  "name": "web3methods",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
@@ -13,16 +13,8 @@
     "start-tokens": "ts-node packages/web3-tokens.ts",
     "start-nft": "ts-node packages/web3-nft.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Pollum-io/sysweb3.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Pollum-io/sysweb3/issues"
-  },
-  "homepage": "https://github.com/Pollum-io/syscweb3#readme",
   "devDependencies": {
     "@types/crypto-js": "^4.1.0",
     "@types/lodash": "^4.14.178",
