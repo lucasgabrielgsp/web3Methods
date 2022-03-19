@@ -93,13 +93,7 @@ export const sendTransactions = async (
   try {
     return web3Provider.eth
       .sendSignedTransaction(`${signedTransaction.rawTransaction}`)
-      .on("transactionHash", (th) => console.log("transactionHash", th))
-      .on("confirmation", (response) => console.log("confirmation", response))
-      .on("error", (error) => console.log("error", error))
-      .on("receipt", (receipt) => console.log("receipt", receipt))
-      .on("sent", (sent) => console.log("sent", sent))
-      .on("sending", (sending) => console.log("sending", sending))
-      .then((result: any) => console.log("THEN", result));
+      .then((result: TransactionReceipt) => result);
   } catch (error) {
     console.log(`${error}`);
   }
