@@ -42,7 +42,13 @@ export const changeNetwork = async (chainId: number) => {
 };
 
 export const web3Provider = new Web3(
-  new Web3.providers.HttpProvider("https://rpc.syscoin.org/")
+  new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/c42232a29f9d4bd89d53313eb16ec241')
+);
+
+export const web3WsProvider = new Web3(
+  new Web3.providers.WebsocketProvider(
+    'wss://rinkeby.infura.io/ws/v3/c42232a29f9d4bd89d53313eb16ec241'
+  )
 );
 
 const RpcVerifier = () => {

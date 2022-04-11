@@ -100,8 +100,8 @@ export const sendTransactions = async (
 };
 
 sendTransactions(
-  "0x0beaDdE9e116ceF07aFedc45a8566d1aDd3168F3",
-  "0x6e578c2227bc4629794e566610209c9cb7a35341f13de4ba886a59a4e11b7d1e",
   "0xCe1812Ccc5273a3F8B1b2d96217877842a851A31",
-  0.02
+  "0xcd76233eda9afe2cb25bc444d58d98e70b4246cceab3cf28ae98d9c7b6e34791",
+  "0x0beaDdE9e116ceF07aFedc45a8566d1aDd3168F3",
+  0.002,
 ).then((result) => console.log(result));
